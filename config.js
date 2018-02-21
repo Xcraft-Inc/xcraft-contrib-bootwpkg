@@ -20,7 +20,8 @@ module.exports = [
     type: 'input',
     name: 'src',
     message: 'source URI',
-    default: 'https://github.com/Skywalker13/unigw/archive/cf58947c03a304e67a2f283ca1943d0ed3b898d5.tar.gz',
+    default:
+      'https://github.com/Skywalker13/unigw/archive/cf58947c03a304e67a2f283ca1943d0ed3b898d5.tar.gz',
   },
   {
     type: 'input',
