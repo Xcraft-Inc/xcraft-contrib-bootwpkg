@@ -156,8 +156,8 @@ cmd.build = function(msg, response) {
           var outDir = path.dirname(outputFile);
 
           /* HACK: a very long filename exists in the tarball, then it is a
-       *       problem for node.js and the 260 chars limitation.
-       */
+           *       problem for node.js and the 260 chars limitation.
+           */
           xExtract.targz(
             outputFile,
             outDir,
