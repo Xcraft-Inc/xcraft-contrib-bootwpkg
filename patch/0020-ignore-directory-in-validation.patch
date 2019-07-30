@@ -11,3 +11,16 @@
          // define a name that is not case sensitive for some of the files
          // that we are looking for; also avoid the path in that one
          case_insensitive::case_insensitive_string basename(info.get_basename());
+--- a/wpkg/libdebpackages/wpkgar_build.cpp     2019-07-30 10:36:03.300031224 +0200
++++ b/wpkg/libdebpackages/wpkgar_build.cpp   2019-07-30 10:36:11.508309813 +0200
+@@ -2508,6 +2508,10 @@
+                 {
+                     break;
+                 }
++                if(info.get_file_type() == memfile::memory_file::file_info::directory)
++                {
++                    continue;
++                }
+ 
+                 // move (rename) a few files if necessary
+                 case_insensitive::case_insensitive_string name(info.get_basename());
