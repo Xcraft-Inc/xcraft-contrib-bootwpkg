@@ -10,12 +10,12 @@ const xFs = require('xcraft-core-fs');
 var cmd = {};
 
 /* TODO: must be generic. */
-var makeRun = function(makeDir, response, callback) {
-  const pkgConfig = require('xcraft-core-etc')(null, response).load(
+var makeRun = function(makeDir, resp, callback) {
+  const pkgConfig = require('xcraft-core-etc')(null, resp).load(
     'xcraft-contrib-bootwpkg'
   );
 
-  response.log.info('begin building of wpkg');
+  resp.log.info('begin building of wpkg');
 
   var make = 'make';
 
@@ -29,7 +29,7 @@ var makeRun = function(makeDir, response, callback) {
   const xProcess = require('xcraft-core-process')({
     logger: 'xlog',
     parser: 'cmake',
-    resp: response,
+    resp,
   });
 
   var currentDir = process.cwd();
@@ -48,7 +48,7 @@ var makeRun = function(makeDir, response, callback) {
 
       if (!err) {
         xFs.cp(path.join(makeDir, 'dist/usr'), path.resolve(pkgConfig.out));
-        response.log.info('wpkg is built and installed');
+        resp.log.info('wpkg is built and installed');
       }
 
       callback(err ? 'make failed' : null);
@@ -57,7 +57,7 @@ var makeRun = function(makeDir, response, callback) {
 };
 
 /* TODO: must be generic. */
-var cmakeRun = function(srcDir, response, callback) {
+var cmakeRun = function(srcDir, resp, callback) {
   /* FIXME, TODO: use a backend (a module) for building with cmake. */
   /* cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr . && make all install */
 
@@ -75,7 +75,7 @@ var cmakeRun = function(srcDir, response, callback) {
   const xProcess = require('xcraft-core-process')({
     logger: 'xlog',
     parser: 'cmake',
-    resp: response,
+    resp,
   });
 
   var currentDir = process.cwd();
@@ -86,7 +86,7 @@ var cmakeRun = function(srcDir, response, callback) {
   });
 };
 
-var patchRun = function(srcDir, response, callback) {
+var patchRun = function(srcDir, resp, callback) {
   var xDevel = require('xcraft-core-devel');
   var async = require('async');
 
@@ -103,10 +103,10 @@ var patchRun = function(srcDir, response, callback) {
   async.eachSeries(
     list,
     function(file, callback) {
-      response.log.info('apply patch: ' + file);
+      resp.log.info('apply patch: ' + file);
       var patchFile = path.join(patchDir, file);
 
-      xDevel.patch(srcDir, patchFile, 1, response, function(err) {
+      xDevel.patch(srcDir, patchFile, 1, resp, function(err) {
         callback(err ? 'patch failed: ' + file + ' ' + err : null);
       });
     },
@@ -119,11 +119,9 @@ var patchRun = function(srcDir, response, callback) {
 /**
  * Build the wpkg package.
  */
-cmd.build = function(msg, response) {
-  const xcraftConfig = require('xcraft-core-etc')(null, response).load(
-    'xcraft'
-  );
-  const pkgConfig = require('xcraft-core-etc')(null, response).load(
+cmd.build = function(msg, resp) {
+  const xcraftConfig = require('xcraft-core-etc')(null, resp).load('xcraft');
+  const pkgConfig = require('xcraft-core-etc')(null, resp).load(
     'xcraft-contrib-bootwpkg'
   );
   var xEnv = require('xcraft-core-env');
@@ -144,7 +142,7 @@ cmd.build = function(msg, response) {
             callback();
           },
           function(progress, total) {
-            response.log.progress('Downloading', progress, total);
+            resp.log.progress('Downloading', progress, total);
           }
         );
       },
@@ -162,7 +160,7 @@ cmd.build = function(msg, response) {
             outputFile,
             outDir,
             /very-very-very-long/,
-            response,
+            resp,
             function(err) {
               var srcDir = path.join(
                 xcraftConfig.tempRoot,
@@ -172,7 +170,7 @@ cmd.build = function(msg, response) {
               callback(err ? 'extract failed: ' + err : null, srcDir);
             },
             function(progress, total) {
-              response.log.progress('Extracting', progress, total);
+              resp.log.progress('Extracting', progress, total);
             }
           );
         },
@@ -181,7 +179,7 @@ cmd.build = function(msg, response) {
       taskPatch: [
         'taskExtract',
         function(callback, results) {
-          patchRun(results.taskExtract, response, callback);
+          patchRun(results.taskExtract, resp, callback);
         },
       ],
 
@@ -199,7 +197,7 @@ cmd.build = function(msg, response) {
       taskCMake: [
         'taskMSYS',
         function(callback, results) {
-          cmakeRun(results.taskExtract, response, callback);
+          cmakeRun(results.taskExtract, resp, callback);
         },
       ],
 
@@ -208,7 +206,7 @@ cmd.build = function(msg, response) {
         function(callback, results) {
           makeRun(
             path.join(results.taskExtract, '../BUILD_WPKG'),
-            response,
+            resp,
             callback
           );
         },
@@ -216,7 +214,7 @@ cmd.build = function(msg, response) {
     },
     function(err, results) {
       if (err) {
-        response.log.err(err);
+        resp.log.err(err);
       }
 
       /* Restore MSYS path. */
@@ -226,7 +224,7 @@ cmd.build = function(msg, response) {
         }
       }
 
-      response.events.send(`wpkg.build.${msg.id}.finished`);
+      resp.events.send(`wpkg.build.${msg.id}.finished`);
     }
   );
 };
