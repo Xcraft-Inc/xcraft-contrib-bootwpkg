@@ -11,7 +11,7 @@
 +
 +                            for(std::vector<std::string>::size_type k(0); k < d.f_architectures.size(); ++k)
 +                            {
-+                                if(wpkg_dependencies::dependencies::match_architectures(target_architecture, d.f_architectures[k]))
++                                if(!wpkg_dependencies::dependencies::match_architectures(target_architecture, d.f_architectures[k]))
 +                                {
 +                                    skip = true;
 +                                    break;
