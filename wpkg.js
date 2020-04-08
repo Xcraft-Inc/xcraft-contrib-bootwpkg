@@ -10,7 +10,7 @@ const xFs = require('xcraft-core-fs');
 var cmd = {};
 
 /* TODO: must be generic. */
-var makeRun = function(makeDir, resp, callback) {
+var makeRun = function (makeDir, resp, callback) {
   const pkgConfig = require('xcraft-core-etc')(null, resp).load(
     'xcraft-contrib-bootwpkg'
   );
@@ -36,14 +36,14 @@ var makeRun = function(makeDir, resp, callback) {
   process.chdir(makeDir);
   async.eachSeries(
     list,
-    function(args, callback) {
+    function (args, callback) {
       var fullArgs = ['-j' + os.cpus().length].concat(args);
 
-      xProcess.spawn(make, fullArgs, {}, function(err) {
+      xProcess.spawn(make, fullArgs, {}, function (err) {
         callback(err ? 'make failed: ' + err : null);
       });
     },
-    function(err) {
+    function (err) {
       process.chdir(currentDir);
 
       if (!err) {
@@ -57,7 +57,7 @@ var makeRun = function(makeDir, resp, callback) {
 };
 
 /* TODO: must be generic. */
-var cmakeRun = function(srcDir, resp, callback) {
+var cmakeRun = function (srcDir, resp, callback) {
   /* FIXME, TODO: use a backend (a module) for building with cmake. */
   /* cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr . && make all install */
 
@@ -80,13 +80,13 @@ var cmakeRun = function(srcDir, resp, callback) {
 
   var currentDir = process.cwd();
   process.chdir(buildDir);
-  xProcess.spawn('cmake', args, {}, function(err) {
+  xProcess.spawn('cmake', args, {}, function (err) {
     process.chdir(currentDir);
     callback(err ? 'cmake failed: ' + err : null);
   });
 };
 
-var patchRun = function(srcDir, resp, callback) {
+var patchRun = function (srcDir, resp, callback) {
   var xDevel = require('xcraft-core-devel');
   var async = require('async');
 
@@ -102,15 +102,15 @@ var patchRun = function(srcDir, resp, callback) {
 
   async.eachSeries(
     list,
-    function(file, callback) {
+    function (file, callback) {
       resp.log.info('apply patch: ' + file);
       var patchFile = path.join(patchDir, file);
 
-      xDevel.patch(srcDir, patchFile, 1, resp, function(err) {
+      xDevel.patch(srcDir, patchFile, 1, resp, function (err) {
         callback(err ? 'patch failed: ' + file + ' ' + err : null);
       });
     },
-    function(err) {
+    function (err) {
       callback(err);
     }
   );
@@ -119,7 +119,7 @@ var patchRun = function(srcDir, resp, callback) {
 /**
  * Build the wpkg package.
  */
-cmd.build = function(msg, resp) {
+cmd.build = function (msg, resp) {
   const xcraftConfig = require('xcraft-core-etc')(null, resp).load('xcraft');
   const pkgConfig = require('xcraft-core-etc')(null, resp).load(
     'xcraft-contrib-bootwpkg'
@@ -132,16 +132,16 @@ cmd.build = function(msg, resp) {
 
   async.auto(
     {
-      taskHttp: function(callback) {
+      taskHttp: function (callback) {
         var xHttp = require('xcraft-core-http');
 
         xHttp.get(
           inputFile,
           outputFile,
-          function() {
+          function () {
             callback();
           },
-          function(progress, total) {
+          function (progress, total) {
             resp.log.progress('Downloading', progress, total);
           }
         );
@@ -149,7 +149,7 @@ cmd.build = function(msg, resp) {
 
       taskExtract: [
         'taskHttp',
-        function(callback) {
+        function (callback) {
           var xExtract = require('xcraft-core-extract');
           var outDir = path.dirname(outputFile);
 
@@ -161,7 +161,7 @@ cmd.build = function(msg, resp) {
             outDir,
             /very-very-very-long/,
             resp,
-            function(err) {
+            function (err) {
               var srcDir = path.join(
                 xcraftConfig.tempRoot,
                 'src',
@@ -169,7 +169,7 @@ cmd.build = function(msg, resp) {
               );
               callback(err ? 'extract failed: ' + err : null, srcDir);
             },
-            function(progress, total) {
+            function (progress, total) {
               resp.log.progress('Extracting', progress, total);
             }
           );
@@ -178,14 +178,14 @@ cmd.build = function(msg, resp) {
 
       taskPatch: [
         'taskExtract',
-        function(callback, results) {
+        function (callback, results) {
           patchRun(results.taskExtract, resp, callback);
         },
       ],
 
       taskMSYS: [
         'taskPatch',
-        function(callback) {
+        function (callback) {
           if (xPlatform.getOs() === 'win') {
             callback(null, xCMake.stripShForMinGW());
             return;
@@ -196,14 +196,14 @@ cmd.build = function(msg, resp) {
 
       taskCMake: [
         'taskMSYS',
-        function(callback, results) {
+        function (callback, results) {
           cmakeRun(results.taskExtract, resp, callback);
         },
       ],
 
       taskMake: [
         'taskCMake',
-        function(callback, results) {
+        function (callback, results) {
           makeRun(
             path.join(results.taskExtract, '../BUILD_WPKG'),
             resp,
@@ -212,7 +212,7 @@ cmd.build = function(msg, resp) {
         },
       ],
     },
-    function(err, results) {
+    function (err, results) {
       if (err) {
         resp.log.err(err);
       }
@@ -234,7 +234,7 @@ cmd.build = function(msg, resp) {
  *
  * @returns {Object} The list and definitions of commands.
  */
-exports.xcraftCommands = function() {
+exports.xcraftCommands = function () {
   return {
     handlers: cmd,
     rc: {
