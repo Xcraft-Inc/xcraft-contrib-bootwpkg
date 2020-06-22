@@ -8,20 +8,20 @@ module.exports = [
     type: 'input',
     name: 'name',
     message: 'package name',
-    default: 'unigw',
+    default: 'wpkg',
   },
   {
     type: 'input',
     name: 'version',
     message: 'version',
-    default: '1.0.2',
+    default: '8c1970f4f74a4c7ce8fba59290532727d038b611',
   },
   {
     type: 'input',
     name: 'src',
     message: 'source URI',
     default:
-      'https://github.com/Xcraft-Inc/wpkg/archive/801a22a0ef02151f98c8566fb32be7d6452b99e8.tar.gz',
+      'https://github.com/Xcraft-Inc/wpkg/archive/8c1970f4f74a4c7ce8fba59290532727d038b611.tar.gz',
   },
   {
     type: 'input',

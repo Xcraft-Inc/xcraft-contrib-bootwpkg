@@ -135,7 +135,7 @@ cmd.build = function (msg, resp) {
               var srcDir = path.join(
                 xcraftConfig.tempRoot,
                 'src',
-                'wpkg-801a22a0ef02151f98c8566fb32be7d6452b99e8' /* pkgConfig.name + '-' + pkgConfig.version */
+                `${pkgConfig.name}-${pkgConfig.version}`
               );
               callback(err ? 'extract failed: ' + err : null, srcDir);
             },
