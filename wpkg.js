@@ -62,6 +62,7 @@ var cmakeRun = function (srcDir, resp, callback) {
   /* cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr . && make all install */
 
   var buildDir = path.join(srcDir, '../BUILD_WPKG');
+  xFs.rm(buildDir);
   xFs.mkdir(buildDir);
 
   var args = ['-DCMAKE_COLOR_MAKEFILE=OFF', '-DCMAKE_BUILD_TYPE=Release'];
