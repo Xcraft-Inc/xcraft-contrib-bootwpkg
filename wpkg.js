@@ -86,36 +86,6 @@ var cmakeRun = function (srcDir, resp, callback) {
   });
 };
 
-var patchRun = function (srcDir, resp, callback) {
-  var xDevel = require('xcraft-core-devel');
-  var async = require('async');
-
-  var os = xPlatform.getOs();
-
-  var patchDir = path.join(__dirname, 'patch');
-  var list = xFs.ls(patchDir, new RegExp('^([0-9]+|' + os + '-).*.patch$'));
-
-  if (!list.length) {
-    callback();
-    return;
-  }
-
-  async.eachSeries(
-    list,
-    function (file, callback) {
-      resp.log.info('apply patch: ' + file);
-      var patchFile = path.join(patchDir, file);
-
-      xDevel.patch(srcDir, patchFile, 1, resp, function (err) {
-        callback(err ? 'patch failed: ' + file + ' ' + err : null);
-      });
-    },
-    function (err) {
-      callback(err);
-    }
-  );
-};
-
 /**
  * Build the wpkg package.
  */
@@ -165,7 +135,7 @@ cmd.build = function (msg, resp) {
               var srcDir = path.join(
                 xcraftConfig.tempRoot,
                 'src',
-                'unigw-cf58947c03a304e67a2f283ca1943d0ed3b898d5' /* pkgConfig.name + '-' + pkgConfig.version */
+                'wpkg-801a22a0ef02151f98c8566fb32be7d6452b99e8' /* pkgConfig.name + '-' + pkgConfig.version */
               );
               callback(err ? 'extract failed: ' + err : null, srcDir);
             },
@@ -176,15 +146,8 @@ cmd.build = function (msg, resp) {
         },
       ],
 
-      taskPatch: [
-        'taskExtract',
-        function (callback, results) {
-          patchRun(results.taskExtract, resp, callback);
-        },
-      ],
-
       taskMSYS: [
-        'taskPatch',
+        'taskExtract',
         function (callback) {
           if (xPlatform.getOs() === 'win') {
             callback(null, xCMake.stripShForMinGW());

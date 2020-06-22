@@ -21,7 +21,7 @@ module.exports = [
     name: 'src',
     message: 'source URI',
     default:
-      'https://github.com/Skywalker13/unigw/archive/cf58947c03a304e67a2f283ca1943d0ed3b898d5.tar.gz',
+      'https://github.com/Xcraft-Inc/wpkg/archive/801a22a0ef02151f98c8566fb32be7d6452b99e8.tar.gz',
   },
   {
     type: 'input',
