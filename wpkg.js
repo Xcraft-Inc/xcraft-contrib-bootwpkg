@@ -68,7 +68,7 @@ var cmakeRun = function (srcDir, resp, callback) {
   var args = [
     '-DCMAKE_COLOR_MAKEFILE=OFF',
     '-DCMAKE_BUILD_TYPE=Release',
-    `-DCMAKE_CXX_FLAGS=-Wl,-rpath,../lib`,
+    `-DCMAKE_CXX_FLAGS='-Wl,-rpath,\\$$ORIGIN/../lib'`,
   ];
 
   if (xPlatform.getOs() === 'win') {
