@@ -65,7 +65,11 @@ var cmakeRun = function (srcDir, resp, callback) {
   xFs.rm(buildDir);
   xFs.mkdir(buildDir);
 
-  var args = ['-DCMAKE_COLOR_MAKEFILE=OFF', '-DCMAKE_BUILD_TYPE=Release'];
+  var args = [
+    '-DCMAKE_COLOR_MAKEFILE=OFF',
+    '-DCMAKE_BUILD_TYPE=Release',
+    `-DCMAKE_CXX_FLAGS=-Wl,-rpath,../lib`,
+  ];
 
   if (xPlatform.getOs() === 'win') {
     args.unshift('-G', 'MinGW Makefiles');
