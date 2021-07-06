@@ -68,7 +68,7 @@ var cmakeRun = function (srcDir, resp, callback) {
   var args = ['-DCMAKE_COLOR_MAKEFILE=OFF', '-DCMAKE_BUILD_TYPE=Release'];
 
   if (xPlatform.getOs() === 'darwin') {
-    args.push(`-DCMAKE_CXX_FLAGS='-Wl,-rpath,@executable_path/../lib'`);
+    args.push(`-DCMAKE_EXE_LINKER_FLAGS='-rpath @executable_path/../lib'`);
   } else {
     args.push(`-DCMAKE_CXX_FLAGS='-Wl,-rpath,\\$$ORIGIN/../lib'`);
   }
