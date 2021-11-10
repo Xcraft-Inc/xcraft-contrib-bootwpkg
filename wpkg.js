@@ -6,6 +6,7 @@ var async = require('async');
 const xCMake = require('xcraft-contrib-bootcmake');
 const xPlatform = require('xcraft-core-platform');
 const xFs = require('xcraft-core-fs');
+const xEnv = require('xcraft-core-env');
 
 var cmd = {};
 
@@ -39,11 +40,13 @@ var makeRun = function (makeDir, resp, callback) {
     function (args, callback) {
       var fullArgs = ['-j' + os.cpus().length].concat(args);
 
+      xEnv.devrootUpdate('bootstrap');
       xProcess.spawn(make, fullArgs, {}, function (err) {
         callback(err ? 'make failed: ' + err : null);
       });
     },
     function (err) {
+      xEnv.devrootUpdate();
       process.chdir(currentDir);
 
       if (!err) {
@@ -87,7 +90,9 @@ var cmakeRun = function (srcDir, resp, callback) {
 
   var currentDir = process.cwd();
   process.chdir(buildDir);
+  xEnv.devrootUpdate('bootstrap');
   xProcess.spawn('cmake', args, {}, function (err) {
+    xEnv.devrootUpdate();
     process.chdir(currentDir);
     callback(err ? 'cmake failed: ' + err : null);
   });
@@ -101,8 +106,6 @@ cmd.build = function (msg, resp) {
   const pkgConfig = require('xcraft-core-etc')(null, resp).load(
     'xcraft-contrib-bootwpkg'
   );
-  var xEnv = require('xcraft-core-env');
-
   var archive = path.basename(pkgConfig.src);
   var inputFile = pkgConfig.src;
   var outputFile = path.join(xcraftConfig.tempRoot, 'src', archive);
