@@ -14,14 +14,14 @@ module.exports = [
     type: 'input',
     name: 'version',
     message: 'version',
-    default: '9caebdff411a64c92f49852d4208c340a84db984',
+    default: '28179b43abf23e5f1faa2a089f364854785709df',
   },
   {
     type: 'input',
     name: 'src',
     message: 'source URI',
     default:
-      'https://github.com/Xcraft-Inc/wpkg/archive/9caebdff411a64c92f49852d4208c340a84db984.tar.gz',
+      'https://github.com/Xcraft-Inc/wpkg/archive/28179b43abf23e5f1faa2a089f364854785709df.tar.gz',
   },
   {
     type: 'input',
