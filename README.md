@@ -92,8 +92,8 @@ Le module s'intègre étroitement avec l'écosystème Xcraft :
 | Option    | Description                  | Type   | Valeur par défaut                                                                              |
 | --------- | ---------------------------- | ------ | ---------------------------------------------------------------------------------------------- |
 | `name`    | Nom du package WPKG          | string | `"wpkg"`                                                                                       |
-| `version` | Version de WPKG à compiler   | string | `"1f085ae33a2f00b9a569acc82776013de1a45b00"`                                                   |
-| `src`     | URI source de l'archive WPKG | string | `"https://github.com/Xcraft-Inc/wpkg/archive/1f085ae33a2f00b9a569acc82776013de1a45b00.tar.gz"` |
+| `version` | Version de WPKG à compiler   | string | `"b5729f4b6642df5f551ad509946a4eb3ff2d5d04"`                                                   |
+| `src`     | URI source de l'archive WPKG | string | `"https://github.com/Xcraft-Inc/wpkg/archive/b5729f4b6642df5f551ad509946a4eb3ff2d5d04.tar.gz"` |
 | `out`     | Répertoire d'installation    | string | `"./usr"`                                                                                      |
 
 ## Détails des sources
